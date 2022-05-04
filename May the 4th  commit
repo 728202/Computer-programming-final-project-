@@ -1,0 +1,439 @@
+kaboom({
+  scale: 1,
+  background: [120,40,2],
+})
+loadSpriteAtlas("https://kaboomjs.com/sprites/dungeon.png", "atlas.json")
+
+const levelConfig = {
+  width: 16,
+  height: 16,
+  pos: vec2(32,32),
+  "w": () => [
+    "wall",
+    sprite("wall"),
+    area(),
+    solid()
+  ],
+
+ "o": () => [
+    "ogre",
+   "enemy",
+    sprite("ogre", {
+      "anim":"run"
+    }),
+    area({"scale": 0.5}),
+   origin("center"),
+   {
+     "xVel": 100
+   }
+  ],
+"g": () => [
+    "goul",
+    "enemy",
+    sprite("goul",{
+     "anim":"run" 
+    }),
+    area({scale: 0.5}),
+    origin("top"),
+  {
+    "xVel": 75
+  },
+  body()
+    
+],
+  "R":() => [
+    "Red boss",
+    "enemy",
+    sprite("Red boss", {
+      "anim":"run"
+    }),
+    area({scale:0.5}),
+  origin("top"),
+    {
+    "xVel":200
+    },
+  
+  ],
+
+"b": () => [
+  "barrier",
+ sprite("wall"),
+  area(),
+ opacity(0.0001)
+
+],
+  "B": () => [
+    "Death barrier",
+    sprite("wall"),
+    area(),
+    opacity(0.0001)
+   
+  ],
+  "D": () => [
+    "door",
+    sprite("closed_door"),
+    area({
+      "scale": 0.7
+    }),
+    solid(),
+    origin("left")
+  ],
+  "c": () => [
+    "chest", 
+    sprite("chest"),
+    area(),
+    
+    origin("top")
+  ],
+  
+  "$": () =>[
+    "coin",
+    sprite("coin"),
+    area(),
+    origin("top")
+  ]
+
+}
+const levels = [
+  ["b            R             b ",
+   "",
+  "wwwwwwwwwwwwwwwwwwwwwwwwwww",
+
+],
+  [
+    
+    "w", 
+    "w",
+    "w",
+    "w",
+    "w",
+    "w",
+    "w",
+    "w         c ",
+  "w        ww",
+    "w  $     b  o   $      b",
+    "wwwwwwww    wwwwwwwwwwwwwww",
+    "                            wwwD",                            "",
+
+"BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB",
+"BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB",    
+  
+  ],
+  [
+    "w",
+    "w",
+    "w",
+    "w",
+    "w",
+    "w",
+    "w",
+    "w",
+    "w",
+    "w",
+    "w",
+    "w",
+    "w",
+    "w        $",
+  "w       ww",
+    "w          b o      b    b  o  b  ",
+    "wwwwwwww    wwwwwwwwwwwwwwwwwwwwwwwwwwwwww     D  b   o    cb",
+    "                                             wwwwwwwwwwwwwwwww",
+    
+    "",
+    "",
+    "",
+"BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB",
+"BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB"
+    
+  ],
+  [
+    "w",
+    "w",
+    "w",
+    "w",
+    "w",
+    "w",
+    "w",
+    "w",
+    "w",
+    "w ",
+    "wwwwwwwwwwwww  b  o $ b   bc     $o    b  D",  
+    "               wwwwwwww   wwwwwwwwwwwwwwwww", 
+    "",
+    "",
+"BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB",
+"BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB"
+  ],
+  
+  [
+    "w",
+    "w",
+    "w",
+    "w",
+    "w",
+    "w",
+    "w    $             b   o  b b   co b       D", 
+    " www  ww  wwww    wwwwww   wwwwwww   wwwwwww",  
+    "BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB",
+   "BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB"
+  ],
+  [
+    
+    "w",
+    "w",
+    "w",
+    "w",
+    "w",
+    "w",
+    "w",
+    "w",
+    "w",
+    "w        www",
+    "w             b  o  b   b  cg  b  b  o  b    D",
+    "wwwwwwww     wwwwwww   wwwwwwww   wwwwww wwwww",
+    "BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB"
+  ],
+  [
+    "                        c",
+    "         b   o b b ob www b  o  b b g  b    D ",
+    "wwwwww   wwwwww  wwww      wwwww   wwwww  wwww",
+  "BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB"
+  ],
+[" b            R             b ",
+  "wwwwwwwwwwwwwwwwwwwwwwwwwww",
+
+],
+  ]
+
+
+
+
+let levelNum = 0
+
+scene("game",() => {
+  let score = 0
+  let hp = 3
+  let mhp = 1
+  let hasKey = false
+  
+  const level = addLevel(levels[levelNum],levelConfig)
+const scoreLabel = add([
+  text("Score: "+score,{
+    "size":16
+  }),
+  pos(16, 16),
+  fixed()
+  
+])
+ const hpLabel=  add([
+    text("HP: "+hp,{
+      "size":16
+    }),
+    pos(16, 30),
+    fixed()
+    
+  ])
+ 
+  
+  const player = add([
+      sprite("hero"),
+    "player",
+      pos(level.getPos(2,0)),
+      area({scale:0.5}),
+      solid(),
+      origin("bot"),
+      body(),
+    {
+      "speed":150, 
+      "jumpSpeed": 350
+    }
+  ]);
+  player.onUpdate(() => {
+    camPos(player.pos)
+  })
+  player.play("idle")
+
+ 
+  onUpdate("enemy", (e) => {
+    e.move(e.xVel, 0)
+  })
+   onCollide("enemy", "barrier",(e, b) =>{
+   e.xVel = -e.xVel
+     debugger
+     if(e.xVel<0){
+     e.flipX(true)
+   }
+   else{
+     e.flipX(false)
+   }
+   })
+ 
+  onCollide("Death barrier", "player",(B, p) =>{
+   
+      camPos(200, 200),
+      wait(1, () => {
+        go("lose")
+        
+      
+    })
+  })
+  onCollide("coin", "player",(c)=> {
+    score++
+    console.log(score)
+    scoreLabel.text = "Score: "+score 
+    destroy(c)
+  })
+  
+  onKeyPress("space", () => {
+     if(player.isGrounded()==true){
+    player.jump(player.jumpSpeed)
+    player.play("hit")
+     }
+      
+  })
+  player.onCollide("wall", () => {
+    player.play("idle")
+  })  
+  player.onCollide("enemy", () => {
+    
+   hp--
+    hpLabel.text = "hp: "+hp
+    if (hp == 0){
+     addKaboom(player.pos)
+   destroy(player)
+    wait(1, () =>{
+    
+    
+    go("lose")
+    
+    })
+      
+  player.onCollide( "Red Boss", (r) => {
+    hp--
+    if(player.IsGrounded() == false){
+        mhp--
+      hp = 3
+        
+    }
+    if (mhp == 0){
+          destroy("Red Boss")
+          add([
+            "goul",
+            pos(r.pos)
+          ])
+        }
+           
+  })
+   }
+  if(player.jumpSpeed>0){} 
+  })
+  
+   player.onCollide("chest", (c) => {
+    c.play("open")
+  hasKey = true
+   })
+ 
+  player.onCollide("door", () =>{
+    if(hasKey){
+      
+    
+
+    if(levelNum == levels.length + 5){
+    go("win")
+    }
+    else{
+       levelNum++
+      localStorage.setItem("level", levelNum)
+      go("game")
+    }
+    }
+  })
+
+
+  
+  onKeyDown("right", () => {
+    player.move(player.speed, 0)
+    player.flipX(false)
+    player.play("run")
+  })
+  onKeyPress(["right", "left"], () =>{
+    player.play("run")
+  })
+  onKeyRelease(["right", "left"], () =>{
+    player.play("idle")
+  })
+ onKeyDown("left", () => {
+   player.move(-player.speed, 0)
+   player.flipX(true)
+   player.play("run")
+
+ 
+ })
+})
+
+//CLOSE game
+scene("menu",() =>{
+  add([
+    text("Scales of Chaos"),
+    pos(width()/2, height()/2),
+    origin("center")
+    
+  ])
+  add([
+    text("PLAY"),
+    "playButton",
+    pos(width()/2, height()/2+75),
+    origin("center"),
+    area()
+    
+  ])
+  onClick("playButton", () => {
+    
+    go("game")
+  })
+})
+
+scene("win",() =>{
+  add([
+    text("You Win"),
+    pos(width()/2, height()/2),
+    origin("center")
+    
+  ])
+  add([
+    text("You Win"),
+    "playButton",
+    pos(width()/2, height()/2+75),
+    origin("center"),
+    area()
+    
+  ])
+  onClick("playButton", () => {
+    
+    go("game")
+  })
+})
+
+scene("lose",() =>{
+  add([
+    text("You Lose"),
+    pos(width()/2, height()/2),
+    origin("center")
+    
+  ])
+  add([
+    text("RETRY"),
+    "playButton",
+    pos(width()/2, height()/2+75),
+    origin("center"),
+    area()
+    
+  ])
+  onClick("playButton", () => {
+    
+    go("game")
+  })
+})
+
+
+go("menu")
