@@ -104,17 +104,26 @@ const levelConfig = {
     sprite("chest"),
   area(),
     origin("top")
+  ],
+  "f": (t)=>[
+    "falling block trap",
+    sprite("wall"),
+     area(),
+     body(),
   ]
 }
+
 const levels = [
-    [
-    "          b ob   b   g   b  b   g   b   t   b     g D b    c",
-    "wwwwwwww  wwww   wwwwwwww   wwwwwwwww  www  wwwwwwwwwww   www",
-   "BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB",
-"BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB",
+   [
+    "w  wwwwwwwwwwwwwwwwwwfwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwww",
+    "w",
+    "w",
+    "w",
+    "wwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwww",
   ],
- 
-  [
+    [
+   
+  
     
     "w", 
     "w",
@@ -257,7 +266,13 @@ const levels = [
  "BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB",
  "BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB"
   ],
-
+      [
+ "          b ob   b   g   b  b   g   b   t   b     g D b    c",
+    "wwwwwwww  wwww   wwwwwwww   wwwwwwwww  www  wwwwwwwwwww   www",
+   "BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB",
+"BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB",
+  ],
+ 
  ["w     wwwwwwwwwwwwwwwwwwwwwwwwwwwwwww",
    "w                                   w",
     "w                                  w",
@@ -287,6 +302,7 @@ const levels = [
    "wwwwwwwwwwwwwwwwwwwwwwwwwwwwwww             c              D",
 "wwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwww",
   ],
+ 
   ]
 
 
@@ -444,7 +460,7 @@ const scoreLabel = add([
       go("lose")
     })
   })
-
+player.onCollide()
   player.onCollide("door", () =>{
     if(hasKey){
       
