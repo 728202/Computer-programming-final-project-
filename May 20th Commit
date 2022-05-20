@@ -1,0 +1,672 @@
+kaboom({
+  scale: 2,
+  background: [120,40,2],
+})
+loadSpriteAtlas("https://kaboomjs.com/sprites/dungeon.png", "atlas.json")
+
+const levelConfig = {
+  width: 16,
+  height: 16,
+  pos: vec2(32,32),
+  "w": () => [
+    "wall",
+    sprite("wall"),
+    area(),
+    solid()
+  ],
+
+ "o": () => [
+    "ogre",
+   "enemy",
+    sprite("ogre", {
+      "anim":"run"
+    }),
+    area({"scale": 0.5}),
+   origin("center"),
+   {
+     "xVel": 100
+   }
+  ],
+"g": () => [
+    "goul",
+    "enemy",
+    sprite("goul",{
+     "anim":"run" 
+    }),
+    area({scale: 0.5}),
+    origin("top"),
+  {
+    "xVel": 75
+  },
+  body()
+    
+],
+  "R":() => [
+    "Red boss",
+    "enemy",
+    sprite("Red boss", {
+      "anim":"run"
+    }),
+    area({scale:0.5}),
+    solid(),
+  origin("top"),
+    {
+    "xVel":200
+    },
+  
+  ],
+
+"b": () => [
+  "barrier",
+ sprite("wall"),
+  area(),
+ opacity(0.0001)
+
+],
+  "B": () => [
+    "Death barrier",
+    sprite("wall"),
+    area(),
+    opacity(0.0001)
+   
+  ],
+  "D": () => [
+    "door",
+    sprite("closed_door"),
+    area({
+      "scale": 0.7
+    }),
+    solid(),
+    origin("left")
+  ],
+  "c": () => [
+    "chest", 
+    sprite("chest"),
+    area(),
+    
+    origin("top")
+  ],
+  
+  "$": () =>[
+    "coin",
+    sprite("coin"),
+    area(),
+    origin("top")
+  ],
+"d": () =>[
+  "Exit Door",
+  sprite("closed_door"),
+  area({"scale": 0.7}),
+  solid(),
+  origin("left")
+],
+  "t": () =>[
+    "Trapped chest",
+    sprite("chest"),
+  area(),
+    origin("top")
+  ],
+  "f": (t)=>[
+    "collapsing ceiling",
+    sprite("wall"),
+     area(),
+     
+    opacity(0.0001)
+  ],
+   "I": (t)=>[
+    "tunnel collapse",
+    sprite("wall"),
+     area(),
+     opacity(0.0001)
+     
+  
+  ],
+  "s": ()=> [
+    "sword",
+      sprite("sword"),
+      area(),
+      origin("bot"),
+    z(1),
+  ],
+}
+
+
+const levels = [
+  [" b            R             b ",
+ "s",
+  "wwwwwwwwwwwwwwwwwwwwwwwwwww"
+
+],
+ [  
+       
+    
+   
+  
+    
+    "w", 
+    "w",
+    "w",
+    "w",
+    "w",
+    "w",
+    "w",
+    "w         c ",
+  "w        ww",
+    "w  $     b  o   $      b",
+    "wwwwwwww    wwwwwwwwwwwwwww",
+    "                            wwwD",                            "",
+
+"BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB",
+"BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB",    
+  
+  ],
+  [
+    "w",
+    "w",
+    "w",
+    "w",
+    "w",
+    "w",
+    "w",
+    "w",
+    "w",
+    "w",
+    "w",
+    "w",
+    "w",
+    "w        $",
+  "w       ww",
+    "w          b o      b   $ b  o  b                            ",
+    "wwwwwwww    wwwwwwwwwwwwwwwwwwwwwwwwwwwwww     D  b   o    cb",
+    "                                             wwwwwwwwwwwwwwwww",
+    
+    "",
+    "",
+    "",
+"BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB",
+"BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB"
+    
+  ],
+  [
+    "w",
+    "w",
+    "w",
+    "w",
+    "w",
+    "w",
+    "w",
+    "w",
+    "w",
+    "w ",
+    "wwwwwwwwwwwww  b  o $ b   bc     $o    b  D",  
+    "               wwwwwwww   wwwwwwwwwwwwwwwww", 
+    "",
+    "",
+"BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB",
+"BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB"
+  ],
+  
+  [
+    "w",
+    "w",
+    "w",
+    "w",
+    "w",
+    "w",
+    "w     $    $        b $ob   b  $cob       D", 
+    " www  ww  wwww    wwwwww   wwwwwww   wwwwwww",  
+    "BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB",
+   "BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB"
+  ],
+  [
+    
+    "w",
+    "w",
+    "w",
+    "w",
+    "w",
+    "w",
+    "w",
+    "w",
+    "w",
+    "w        www",
+    "w             b  o $b   b $co  b  b  o  b $$ D",
+    "wwwwwwww     wwwwwww   wwwwwwww   wwwwww wwwww",
+    "BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB"
+  ],
+  
+  
+  ["w",
+   "w",
+   "w",
+    "w",
+    "w                       c",
+    "w         b   o b b ob www b  o  b b o b    D ",
+    "wwwwww   wwwwww  wwww      wwwww   wwwww  wwww",
+  "BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB"
+  ],
+["s b            R             b ",
+ "",
+  "wwwwwwwwwwwwwwwwwwwwwwwwwww"
+
+],[
+  "$$$  $$$$$$$ c $$$   D",
+  "wwwwwwwwwwwwwwwwwwwwww"
+  ],
+   [
+    "                                d",
+    "wwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwww"
+  ],
+  ["w                                 c                    ",
+ "w                                www                   ",
+  "w",
+  "w          b o b  bo  b    b  g   $   b         bo  bD     ",
+  "wwwwwww   wwwww  wwwww   www wwwwwwwwww ww  ww wwwwwwwwww",
+   "BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB",
+   "BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB"
+  ],
+  ["                    $         $                ",
+    "    b  g   b     wwww       www               ",
+   "                       b g  b",
+    "www wwwwwww www ww ww wwwww ww wwwwww wwww"
+  ],
+   [
+  "w",
+  "w",
+  "w",
+  "w",
+  "w",
+"w                $        $c                      ",
+    "w                wwww      www                       ",
+ "w",
+   "w       b  g  b               b o b    b  g b  b  o b      D  ",
+    "www    wwwwwww  www ww ww   wwwww ww  wwwwww   wwww  wwwwwwwwww",
+ "BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB",
+ "BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB"
+  ],
+      [
+ "          b ob   b   g   b  b   g   b   t   b     g D b    c",
+    "wwwwwwww  wwww   wwwwwwww   wwwwwwwww  www  wwwwwwwwwww   www",
+   "BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB",
+"BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB",
+  ],
+ 
+ ["w     wwwwwwwwwwwwwwwwwwwwwwwwwwwwwww",
+   "w                                   w",
+    "w                                  w",
+    "w     b   o  b  b   g   b          w",
+    "wwwwwwwwwwwwwwwwwwwwwwwwwwwwww     w",
+   "wwwwwwwwwwwwwwwwwwwwwwwwwwwwwww     w",
+   "wwwwwwwwwwwwwwwwwwwwwwwwwwwwwww     w",
+   "wwwwwwwwwwwwwwwwwwwwwwwwwwwwwww     w",
+   "wwwwwwwwwwwwwwwwwwwwwwwwwwwwwww     w",
+   "wwwwwwwwwwwwwwwwwwwwwwwwwwwwwww     w",
+   "wwwwwwwwwwwwwwwwwwwwwwwwwwwwwww     w",
+   "wwwwwwwwwwwwwwwwwwwwwwwwwwwwwww     w",
+   "wwwwwwwwwwwwwwwwwwwwwwwwwwwwwww     w",
+   "wwwwwwwwwwwwwwwwwwwwwwwwwwwwwww     w",
+   "wwwwwwwwwwwwwwwwwwwwwwwwwwwwwww     w",
+   "wwwwwwwwwwwwwwwwwwwwwwwwwwwwwww     w",
+   "wwwwwwwwwwwwwwwwwwwwwwwwwwwwwww     w",
+   "wwwwwwwwwwwwwwwwwwwwwwwwwwwwwww     w",
+   "wwwwwwwwwwwwwwwwwwwwwwwwwwwwwww     w",
+   "wwwwwwwwwwwwwwwwwwwwwwwwwwwwwww     w",
+   "wwwwwwwwwwwwwwwwwwwwwwwwwwwwwww     w",
+   "wwwwwwwwwwwwwwwwwwwwwwwwwwwwwww     w",
+   "wwwwwwwwwwwwwwwwwwwwwwwwwwwwwww     w",
+   "wwwwwwwwwwwwwwwwwwwwwwwwwwwwwww           wwwwwwwwwwwwwwwwwwwwwwww",
+   "wwwwwwwwwwwwwwwwwwwwwwwwwwwwwww      ",
+   "wwwwwwwwwwwwwwwwwwwwwwwwwwwwwww      ",
+   "wwwwwwwwwwwwwwwwwwwwwwwwwwwwwww             c          D",
+"wwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwww",
+  ],
+     [
+ "   wwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwww",
+       "   wwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwww",
+       "   wwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwww",
+       "   wwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwww",
+       "   wwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwww",
+       "   wwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwww",
+       "   wwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwww",
+       "   wwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwww",
+       "   wwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwww",
+     
+     "   wwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwww",
+     "   wwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwww",
+     "   wwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwww",
+     "   wwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwww",
+     "   wwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwww",
+    "   wwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwww",
+    "w                                                    w",
+    "w                                                    w",
+"wD                    f    f     ff             I c w",
+"wwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwww",
+  ],
+  "",
+  "",
+  ]
+
+
+
+
+let levelNum = 0
+
+scene("game",() => {
+  let score = 0
+  let hp = 3
+  let mhp = 0
+  let hasKey = false
+  
+  const level = addLevel(levels[levelNum],levelConfig)
+const scoreLabel = add([
+  text("Score: "+score,{
+    "size":16
+  }),
+  pos(16, 16),
+  fixed()
+  
+])
+ const hpLabel=  add([
+    text("HP: "+hp,{
+      "size":16
+    }),
+    pos(16, 30),
+    fixed()
+    
+  ])
+ 
+  
+  const player = add([
+      sprite("hero"),
+    "player",
+      pos(level.getPos(2,0)),
+      area({scale:0.5}),
+      solid(),
+      origin("bot"),
+      body(),
+    {
+      "speed":150, 
+      "jumpSpeed": 360,
+      "anims":"run"
+    }
+  ]);
+  
+  const collapsedCeiling = "collapsed ceiling"
+  const sword = "sword"
+  player.onUpdate(() => {
+    camPos(player.pos)
+  })
+  player.play("idle")
+
+ 
+  onUpdate("enemy", (e) => {
+    e.move(e.xVel, 0)
+  })
+   onCollide("enemy", "barrier",(e, b) =>{
+   e.xVel = -e.xVel
+     debugger
+     if(e.xVel<0){
+     e.flipX(true)
+   }
+   else{
+     e.flipX(false)
+   }
+   })
+ 
+  onCollide("Death barrier", "player",(B, p) =>{
+   
+      camPos(200, 200),
+      wait(1, () => {
+        go("lose")
+        
+      
+    })
+  })
+  onCollide("coin", "player",(c)=> {
+    score++
+    console.log(score)
+    scoreLabel.text = "Score: "+score 
+    destroy(c)
+  })
+  
+  onKeyPress("space", () => {
+     if(player.isGrounded()==true){
+    player.jump(player.jumpSpeed)
+    player.play("hit")
+     }
+      
+  })
+  player.onCollide("wall", () => {
+    player.play("idle")
+  })  
+  player.onCollide("sword",(s) => {
+    s.use(follow(player, vec2(10,-3)))
+  })
+  player.onCollide("enemy", () => {
+    
+   hp--
+    hpLabel.text = "hp: "+hp
+    if (hp == 0){
+     addKaboom(player.pos)
+   destroy(player)
+    wait(1, () =>{
+    
+    
+    go("lose")
+    
+    })
+    }
+  player.onCollide( "Red Boss", (r) => {
+    hp--
+    if(player.isGrounded() == false){
+        mhp--
+      hp = 3
+        
+    }
+    if (mhp == 0){
+          destroy("Red Boss")
+          add([
+            "goul",
+            pos(r.pos)
+          ])
+        }
+       wait(4, () =>{
+         add([
+           "door",
+           pos(r.pos)
+         ])
+       })    
+  })
+  
+  if(player.jumpSpeed>0){
+  
+  } 
+  })
+  
+   player.onCollide("chest", (c) => {
+    c.play("open")
+  hasKey = true
+   })
+ player.onCollide("Trapped chest", (t) =>{
+   t.play("open")
+   add([
+     "falling block trap",
+     sprite("wall"),
+     pos( t.pos.x, t.pos.y-98),
+     area(),
+     body(),
+     
+    
+       ])
+   
+     })
+  player.onCollide("falling block trap", ()=>{
+    destroy(player),
+      addKaboom(player.pos),
+      wait(1, ()=>{
+      go("lose")
+    })
+  })
+  player.onCollide("collapsing ceiling", (f)=>{
+   add([
+    "collapsed ceiling",
+     pos(f.pos.x, f.pos.y-32),
+     sprite("wall"),
+     area(),
+     body()
+   ])
+   
+    })
+  onCollide("collapsing ceiling", "wall", () => {
+    destroy("wall")
+  })
+player.onCollide("collapsed ceiling", (c) =>{
+  if(c.isGrounded()==false){
+  destroy(player),
+  addKaboom(player.pos),
+  wait(1, () =>{
+    go("lose")
+  })
+       }
+  })
+
+   player.onCollide("tunnel collapse", (f)=>{
+  loop(1, () =>{
+     add([
+    "collapsed ceiling",
+     pos(rand(80, 848), f.pos.y-32),
+     sprite("wall"),
+     area(),
+     body()
+   ])
+   })
+   })
+  player.onCollide("door", () =>{
+    if(hasKey){
+    
+    
+
+    if(levelNum == levels.length + 5){
+    go("win")
+    }
+    else{
+       levelNum++
+      localStorage.setItem("level", levelNum)
+      go("game")
+    }
+    }
+  })
+  
+  player.onCollide("Exit Door", () =>{
+    
+       levelNum++
+      localStorage.setItem("level", levelNum)
+      go("game")
+   
+  })
+    
+
+
+
+    
+    
+
+
+  
+  
+  
+
+
+  
+  onKeyDown("right", () => {
+    player.move(player.speed, 0)
+    player.flipX(false)
+    player.play("run")
+  })
+  onKeyPress(["right", "left"], () =>{
+    player.play("run")
+  })
+  onKeyRelease(["right", "left"], () =>{
+    player.play("idle")
+  })
+ onKeyDown("left", () => {
+   player.move(-player.speed, 0)
+   player.flipX(true)
+   player.play("run")
+
+ onKeyDown("s", () => {
+    sword.flipY(false)
+   wait(0.5, ()=>{
+     sword.flipY(false)
+   })
+  })
+ })
+})
+
+//CLOSE game
+scene("menu",() =>{
+  add([
+    text("Scales of Chaos"),
+    pos(width()/2, height()/2),
+    origin("center")
+    
+  ])
+  add([
+    text("PLAY"),
+    "playButton",
+    pos(width()/2, height()/2+75),
+    origin("center"),
+    area()
+    
+  ])
+  onClick("playButton", () => {
+    
+    go("game")
+  })
+})
+
+scene("win",() =>{
+  add([
+    text("You Win"),
+    pos(width()/2, height()/2),
+    origin("center")
+    
+  ])
+  add([
+    text("You Win"),
+    "playButton",
+    pos(width()/2, height()/2+75),
+    origin("center"),
+    area()
+    
+  ])
+  onClick("playButton", () => {
+    
+    go("game")
+  })
+})
+
+scene("lose",() =>{
+  add([
+    text("You Lose"),
+    pos(width()/2, height()/2),
+    origin("center")
+    
+  ])
+  add([
+    text("RETRY"),
+    "playButton",
+    pos(width()/2, height()/2+75),
+    origin("center"),
+    area()
+    
+  ])
+  onClick("playButton", () => {
+    
+    go("game")
+  })
+})
+
+
+
+go("menu")
